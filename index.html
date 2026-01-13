@@ -202,12 +202,34 @@
         </p>
       </div>
 
-      <!-- NOTE: このフォームはダミー。後でGoogle Form/Typeform/自前APIに差し替え推奨 -->
-      <form class="waitlist-form" onsubmit="event.preventDefault(); alert('Thanks! (Connect this form to a real waitlist next.)');">
+      <!-- Waitlist Form: mailto link to singkana.official@gmail.com -->
+      <form class="waitlist-form" onsubmit="event.preventDefault(); handleWaitlistSubmit(event);">
         <label class="sr-only" for="email">Email</label>
         <input id="email" type="email" placeholder="your@email.com" required />
         <button type="submit">Join the Waitlist</button>
       </form>
+      
+      <script>
+        function handleWaitlistSubmit(event) {
+          const emailInput = document.getElementById('email');
+          const email = emailInput.value.trim();
+          
+          if (!email) {
+            alert('Please enter your email address.');
+            return;
+          }
+          
+          // メールクライアントを開く（mailto:）
+          const subject = encodeURIComponent('SingKANA Waitlist Signup');
+          const body = encodeURIComponent(`Email: ${email}\n\nI would like to join the SingKANA waitlist.`);
+          window.location.href = `mailto:singkana.official@gmail.com?subject=${subject}&body=${body}`;
+          
+          // ユーザーフィードバック
+          setTimeout(() => {
+            alert('Thanks! Your email client should open. If not, please send an email to singkana.official@gmail.com with "Waitlist Signup" in the subject.');
+          }, 500);
+        }
+      </script>
 
       <p class="micro center">
         No spam. One email when we open the next milestone.
