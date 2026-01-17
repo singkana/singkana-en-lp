@@ -119,6 +119,10 @@ a:hover{ opacity:0.9; }
   background: rgba(255,255,255,0.04);
 }
 
+/* "Japanese site" など補助リンク用（ナビ/フッター共通） */
+.nav-muted{ opacity: .7; }
+.nav-muted:hover{ opacity: 1; }
+
 .hero-inner{
   position: relative;
   max-width: 1120px;
@@ -524,5 +528,3 @@ h2{
     grid-template-columns: 1fr;
   }
 }
-  .nav-muted { opacity: .7; }
-  .nav-muted:hover { opacity: 1; }
