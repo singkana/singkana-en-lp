@@ -524,3 +524,5 @@ h2{
     grid-template-columns: 1fr;
   }
 }
+  .nav-muted { opacity: .7; }
+  .nav-muted:hover { opacity: 1; }
