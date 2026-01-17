@@ -209,24 +209,56 @@
       </form>
       
       <script>
-        function handleWaitlistSubmit(event) {
-          const emailInput = document.getElementById('email');
-          const email = emailInput.value.trim();
-          
+        async function handleWaitlistSubmit(event) {
+          const emailInput = document.getElementById("email");
+          const email = (emailInput.value || "").trim().toLowerCase();
+
           if (!email) {
-            alert('Please enter your email address.');
+            alert("Please enter your email address.");
             return;
           }
-          
-          // メールクライアントを開く（mailto:）
-          const subject = encodeURIComponent('SingKANA Waitlist Signup');
-          const body = encodeURIComponent(`Email: ${email}\n\nI would like to join the SingKANA waitlist.`);
-          window.location.href = `mailto:singkana.official@gmail.com?subject=${subject}&body=${body}`;
-          
-          // ユーザーフィードバック
-          setTimeout(() => {
-            alert('Thanks! Your email client should open. If not, please send an email to singkana.official@gmail.com with "Waitlist Signup" in the subject.');
-          }, 500);
+
+          // 送信中の多重送信防止（UIがあるなら）
+          const submitBtn = event?.target?.querySelector('button[type="submit"]');
+          if (submitBtn) submitBtn.disabled = true;
+
+          try {
+            const res = await fetch("/api/waitlist", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok && data.ok) {
+              if (data.already_registered) {
+                alert("Already registered. Thanks!");
+              } else {
+                alert("You're on the waitlist. Thank you!");
+              }
+              emailInput.value = "";
+              return;
+            }
+
+            // エラー文言（英語寄せ）
+            const code = (data && (data.error || data.code)) || "";
+            if (code === "invalid_origin") {
+              alert("Blocked by security policy. Please refresh and try again.");
+            } else if (code === "rate_limited") {
+              alert("Too many requests. Please wait a minute and try again.");
+            } else if (code === "invalid_email") {
+              alert("Invalid email format.");
+            } else if (code === "empty_email") {
+              alert("Please enter your email address.");
+            } else {
+              alert("Signup failed. Please try again.");
+            }
+          } catch (e) {
+            alert("Network error. Please try again.");
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
+          }
         }
       </script>
 
