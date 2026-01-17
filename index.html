@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <!-- Favicon (iOS Safari対策: フル指定 + キャッシュ分離 ?v=3) -->
+  <link rel="icon" href="/favicon.ico?v=3" sizes="any">
   <link rel="shortcut icon" href="/favicon.ico?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch.png?v=3">
-  
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SingKANA – Sing Japanese Anime Songs Naturally</title>
@@ -55,13 +55,10 @@
           even if you don't speak Japanese.
         </p>
 
-       <div class="cta">
-  <a href="/romaji/" class="btn primary">Try Romaji (Beta)</a>
-  </a>
-  <a href="#waitlist" class="btn ghost">
-    Join the Waitlist
-  </a>
-</div>
+        <div class="cta">
+          <a href="/romaji/" class="btn primary">Try Romaji (Beta)</a>
+          <a href="#waitlist" class="btn ghost">Join the Waitlist</a>
+        </div>
 
         <p class="micro">
           <span class="micro-dot" aria-hidden="true"></span>
@@ -186,7 +183,7 @@
       </div>
 
       <ul class="list">
-        <li>Anime & J-Pop fans who want to sing properly</li>
+        <li>Anime &amp; J-Pop fans who want to sing properly</li>
         <li>YouTube / TikTok vocal cover creators</li>
         <li>Japanese learners who dislike textbooks</li>
         <li>Anyone who learns best through sound and timing</li>
@@ -201,13 +198,12 @@
         </p>
       </div>
 
-      <!-- Waitlist Form: mailto link to singkana.official@gmail.com -->
       <form class="waitlist-form" onsubmit="event.preventDefault(); handleWaitlistSubmit(event);">
         <label class="sr-only" for="email">Email</label>
         <input id="email" type="email" placeholder="your@email.com" required />
         <button type="submit">Join the Waitlist</button>
       </form>
-      
+
       <script>
         async function handleWaitlistSubmit(event) {
           const emailInput = document.getElementById("email");
@@ -218,7 +214,6 @@
             return;
           }
 
-          // 送信中の多重送信防止（UIがあるなら）
           const submitBtn = event?.target?.querySelector('button[type="submit"]');
           if (submitBtn) submitBtn.disabled = true;
 
@@ -241,7 +236,6 @@
               return;
             }
 
-            // エラー文言（英語寄せ）
             const code = (data && (data.error || data.code)) || "";
             if (code === "invalid_origin") {
               alert("Blocked by security policy. Please refresh and try again.");
