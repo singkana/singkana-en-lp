@@ -1,7 +1,7 @@
-/* SingKANA EN LP styles (Hardened /en/ edition)
-   - Centered layout guaranteed
-   - Prevents "left aligned" / "footer stuck" regressions
-   - Restores CTA quality (primary/ghost contrast)
+/* SingKANA EN LP styles (EN isolated under /en/)
+   - Centered shell restored
+   - Footer alignment hardened
+   - CTA restored (stronger primary + better hover)
 */
 
 :root{
@@ -23,14 +23,10 @@
   --accent1: rgba(139, 92, 246, 0.95);
   --accent2: rgba(236, 72, 153, 0.95);
   --accent3: rgba(56, 189, 248, 0.95);
-
-  --radius: 18px;
 }
 
 *{ box-sizing: border-box; }
-
-/* IMPORTANT: avoid height:100% traps; allow natural page growth */
-html, body{ min-height: 100%; }
+html, body{ height: 100%; }
 
 body{
   margin: 0;
@@ -42,15 +38,12 @@ body{
     radial-gradient(1000px 700px at 60% 95%, rgba(236, 72, 153, 0.12), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   overflow-x: hidden;
-  overflow-y: auto;
 }
 
 a{ color: inherit; text-decoration: none; }
 a:hover{ color: rgba(203, 213, 225, 0.95); }
 
-/* ---------- Centered layout shell (never breaks) ---------- */
-/* One source of truth for centered width */
-.container,
+/* ---------- Centered layout shell ---------- */
 .nav,
 .hero-inner,
 .footer-inner{
@@ -59,7 +52,12 @@ a:hover{ color: rgba(203, 213, 225, 0.95); }
   margin-right: auto;
 }
 
-/* Anchor landing: keep headings from hiding under header-like areas */
+.container{
+  width: min(var(--page-max), calc(100% - (var(--page-pad) * 2)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #about, #immersion, #waitlist{ scroll-margin-top: 88px; }
 
 /* ---------- Hero ---------- */
@@ -116,13 +114,19 @@ a:hover{ color: rgba(203, 213, 225, 0.95); }
   font-size: 13px;
   color: rgba(226, 232, 240, 0.85);
 }
-.nav-links a{
-  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-  border-radius: 999px;
-}
+.nav-links a{ transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease; }
 .nav-links a:hover{ color: rgba(226,232,240,1); }
+
+.nav-muted{
+  color: rgba(148,163,184,0.95);
+}
+.nav-muted:hover{
+  color: rgba(226,232,240,0.95);
+}
+
 .nav-links a.pill{
   padding: 8px 12px;
+  border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(2,6,23,0.35);
   color: rgba(226, 232, 240, 0.92);
@@ -130,7 +134,6 @@ a:hover{ color: rgba(203, 213, 225, 0.95); }
 .nav-links a.pill:hover{
   border-color: rgba(139,92,246,0.55);
   background: rgba(139,92,246,0.10);
-  transform: translateY(-1px);
 }
 
 /* ---------- Hero content ---------- */
@@ -172,7 +175,6 @@ h1{
   max-width: 58ch;
 }
 
-/* ---------- CTA (restore grade) ---------- */
 .cta{
   display: flex;
   align-items: center;
@@ -180,6 +182,8 @@ h1{
   flex-wrap: wrap;
   margin-top: 18px;
 }
+
+/* ✅ CTA復活: primaryを強く、hoverを“気持ちいい”方向に */
 .btn{
   display: inline-flex;
   align-items: center;
@@ -191,30 +195,31 @@ h1{
   font-size: 14px;
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(2,6,23,0.35);
+  color: rgba(226,232,240,0.95);
   transition: transform 0.12s ease, filter 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
-  will-change: transform;
+  user-select: none;
 }
-.btn:hover{ transform: translateY(-1px); }
+.btn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(139,92,246,0.55);
+  background: rgba(139,92,246,0.10);
+}
+.btn:active{
+  transform: translateY(0px);
+}
 
 .btn.primary{
   border-color: rgba(139,92,246,0.65);
-  background: linear-gradient(90deg, rgba(139,92,246,0.95), rgba(236,72,153,0.92));
-  box-shadow: 0 0 45px rgba(139,92,246,0.26);
+  background: linear-gradient(90deg, rgba(139,92,246,0.98), rgba(236,72,153,0.94));
+  box-shadow: 0 18px 50px rgba(139,92,246,0.22);
+  color: #fff;
 }
 .btn.primary:hover{
-  filter: brightness(1.08);
-  box-shadow: 0 0 70px rgba(139,92,246,0.28);
+  filter: brightness(1.06);
+  box-shadow: 0 22px 60px rgba(139,92,246,0.26);
 }
-
-/* Ghost should not look like "cheap default button" */
 .btn.ghost{
-  border-color: rgba(255,255,255,0.20);
-  background: rgba(2,6,23,0.22);
-}
-.btn.ghost:hover{
-  border-color: rgba(236,72,153,0.55);
-  background: rgba(236,72,153,0.10);
-  box-shadow: 0 0 40px rgba(236,72,153,0.12);
+  background: rgba(2,6,23,0.28);
 }
 
 .micro{
@@ -237,7 +242,7 @@ h1{
 
 /* ---------- Hero card ---------- */
 .hero-card{
-  border-radius: var(--radius);
+  border-radius: 18px;
   border: 1px solid var(--stroke);
   background: rgba(2,6,23,0.40);
   backdrop-filter: blur(12px);
@@ -281,15 +286,8 @@ h1{
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
-.metric-label{
-  font-size: 11px;
-  color: var(--muted2);
-}
-.metric-value{
-  margin-top: 3px;
-  font-weight: 700;
-  font-size: 12px;
-}
+.metric-label{ font-size: 11px; color: var(--muted2); }
+.metric-value{ margin-top: 3px; font-weight: 700; font-size: 12px; }
 .card-bottom{
   padding: 12px 16px 14px;
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -354,25 +352,17 @@ main{
   -webkit-backdrop-filter: blur(12px);
   padding: 16px;
 }
-.panel h3{
-  margin: 8px 0 0;
-  font-size: 16px;
-}
+.panel h3{ margin: 8px 0 0; font-size: 16px; }
 .panel p{
   margin: 10px 0 0;
   font-size: 13px;
   line-height: 1.7;
   color: var(--muted);
 }
-.panel-icon{
-  font-size: 18px;
-  opacity: 0.9;
-}
+.panel-icon{ font-size: 18px; opacity: 0.9; }
 
-/* Dark section: full-bleed background but keep content centered */
-.section.dark{
-  position: relative;
-}
+/* Dark section: full-bleed background but centered content */
+.section.dark{ position: relative; }
 .section.dark::before{
   content: "";
   position: absolute;
@@ -389,12 +379,7 @@ main{
   z-index: -1;
 }
 .panel.darkpanel{ background: rgba(2,6,23,0.45); }
-
-.emphasis{
-  margin: 24px 0 0;
-  font-size: 18px;
-  line-height: 1.5;
-}
+.emphasis{ margin: 24px 0 0; font-size: 18px; line-height: 1.5; }
 
 .notebox{
   margin-top: 20px;
@@ -449,20 +434,20 @@ main{
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid rgba(139,92,246,0.65);
-  background: linear-gradient(90deg, rgba(139,92,246,0.95), rgba(236,72,153,0.92));
+  background: linear-gradient(90deg, rgba(139,92,246,0.98), rgba(236,72,153,0.94));
   color: #fff;
   font-weight: 900;
   cursor: pointer;
   transition: filter 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
-  box-shadow: 0 0 40px rgba(139,92,246,0.18);
+  box-shadow: 0 16px 44px rgba(139,92,246,0.18);
 }
 .waitlist-form button:hover{
-  filter: brightness(1.08);
+  filter: brightness(1.06);
   transform: translateY(-1px);
-  box-shadow: 0 0 65px rgba(139,92,246,0.22);
+  box-shadow: 0 20px 54px rgba(139,92,246,0.22);
 }
 
-/* Footer (hard guarantee centered) */
+/* Footer */
 .footer{
   border-top: 1px solid rgba(255,255,255,0.08);
   background: rgba(2,6,23,0.35);
@@ -475,6 +460,21 @@ main{
   gap: 12px;
   flex-wrap: wrap;
 }
+
+/* ✅ フッター“寄り”対策: 右側は必ず右寄せ＆折返し時も破綻しにくく */
+.footer-right{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: right;
+}
+.footer-link{
+  font-size: 11px;
+  text-decoration: none;
+}
+
 .footer-text{
   margin: 0;
   font-size: 12px;
@@ -501,10 +501,8 @@ main{
     grid-template-columns: 1fr;
     gap: 18px;
     padding-top: 26px;
-    align-items: start;
   }
 }
-
 @media (max-width: 640px){
   :root{ --page-pad: 16px; }
   h1{ font-size: 36px; }
@@ -513,4 +511,5 @@ main{
   .grid-2{ grid-template-columns: 1fr; }
   .section{ padding: 52px 0; }
   .nav{ padding: 14px 0; }
+  .footer-right{ justify-content: flex-start; text-align: left; }
 }
