@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Favicons: unify to existing assets to avoid EN/JP mixups -->
+  <!-- Favicons (shared assets) -->
   <link rel="icon" href="/assets/favicon/favicon.ico?v=3" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png?v=3">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png?v=3">
@@ -14,47 +14,21 @@
   <meta name="description" content="Sing Japanese anime songs with singable romaji and phonetic guidance. Absorb real Japanese pronunciation naturally through music. Anime lyrics romaji converter for vocal covers and language immersion. Launching on Product Hunt!" />
   <meta name="keywords" content="Japanese songs, anime songs, romaji, pronunciation, sing Japanese, language immersion, vocal cover" />
   <meta property="og:title" content="SingKANA – Sing Japanese Anime Songs Naturally" />
-  <meta property="og:description" content="Sing Japanese lyrics with singable romaji and phonetic guidance. Not translated. Sound-first." />
+  <meta property="og:description" content="Sing Japanese lyrics with singable romaji and phonetic guidance. Not translation. Sound-first." />
   <meta property="og:type" content="website" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- CRITICAL: absolute path to prevent /en style.css 404 -->
-  <link rel="stylesheet" href="/style.css?v=2" />
+  <!-- ✅ IMPORTANT:
+       /en/ 配下で動かす前提なので ./style.css が正解（=> /en/style.css）
+       もし subdomain のルート配信（en.singkana.com/）なら "/style.css" に変える。 -->
+  <link rel="stylesheet" href="./style.css?v=3" />
 
-  <!-- Anchor landing safety -->
+  <!-- Anchor landing comfort -->
   <style>
     #about, #immersion, #waitlist { scroll-margin-top: 88px; }
-
-    /* CTA polish patch (keeps existing classes, no functionality loss) */
-    .btn.ghost{
-      border-color: rgba(255,255,255,0.18);
-      background: rgba(2,6,23,0.25);
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-    .btn.ghost:hover{
-      border-color: rgba(236,72,153,0.55);
-      background: rgba(236,72,153,0.10);
-    }
-    .btn.primary{
-      transform: translateZ(0);
-    }
-    .btn.primary:hover{
-      filter: brightness(1.08);
-      box-shadow: 0 0 55px rgba(139,92,246,0.22);
-    }
-
-    /* Prevent “footer looks shifted” even if upstream CSS changes */
-    .footer-inner{
-      width: min(1120px, calc(100% - 48px));
-      margin-left: auto;
-      margin-right: auto;
-    }
-    @media (max-width: 640px){
-      .footer-inner{ width: min(1120px, calc(100% - 32px)); }
-    }
   </style>
 </head>
 
@@ -65,6 +39,7 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-name">SingKANA</span>
       </div>
+
       <div class="nav-links">
         <a href="#about" data-anchor="#about">About</a>
         <a href="#immersion" data-anchor="#immersion">Immersion</a>
@@ -138,7 +113,6 @@
   </header>
 
   <main>
-    <!-- IMPORTANT: use the shared centered container class (do not inline max-width) -->
     <div class="container">
       <section id="about" class="section">
         <div class="section-head">
@@ -239,49 +213,6 @@
           <button type="submit">Join the Waitlist</button>
         </form>
 
-        <script>
-          async function handleWaitlistSubmit(event) {
-            const emailInput = document.getElementById("email");
-            const email = (emailInput.value || "").trim().toLowerCase();
-
-            if (!email) {
-              alert("Please enter your email address.");
-              return;
-            }
-
-            const submitBtn = event?.target?.querySelector('button[type="submit"]');
-            if (submitBtn) submitBtn.disabled = true;
-
-            try {
-              const res = await fetch("/api/waitlist", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email })
-              });
-
-              const data = await res.json().catch(() => ({}));
-
-              if (res.ok && data.ok) {
-                if (data.already_registered) alert("Already registered. Thanks!");
-                else alert("You're on the waitlist. Thank you!");
-                emailInput.value = "";
-                return;
-              }
-
-              const code = (data && (data.error || data.code)) || "";
-              if (code === "invalid_origin") alert("Blocked by security policy. Please refresh and try again.");
-              else if (code === "rate_limited") alert("Too many requests. Please wait a minute and try again.");
-              else if (code === "invalid_email") alert("Invalid email format.");
-              else if (code === "empty_email") alert("Please enter your email address.");
-              else alert("Signup failed. Please try again.");
-            } catch (e) {
-              alert("Network error. Please try again.");
-            } finally {
-              if (submitBtn) submitBtn.disabled = false;
-            }
-          }
-        </script>
-
         <p class="micro center">
           No spam. One email when we open the next milestone.
         </p>
@@ -296,48 +227,98 @@
         <span class="brand-name">SingKANA</span>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-        <a href="https://singkana.com" target="_blank" rel="noopener" class="nav-muted"
-           style="font-size: 11px; color: #94a3b8; text-decoration: none; transition: color 0.2s;">
-          Japanese site
-        </a>
-
+      <div class="footer-right">
+        <a href="https://singkana.com" target="_blank" rel="noopener" class="nav-muted footer-link">Japanese site</a>
         <p class="footer-text">© 2026 SingKANA. Built for music, language, and culture.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Anchor navigation hardening -->
+  <script>
+    async function handleWaitlistSubmit(event) {
+      const emailInput = document.getElementById("email");
+      const email = (emailInput.value || "").trim().toLowerCase();
+
+      if (!email) {
+        alert("Please enter your email address.");
+        return;
+      }
+
+      const submitBtn = event?.target?.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.ok) {
+          if (data.already_registered) {
+            alert("Already registered. Thanks!");
+          } else {
+            alert("You're on the waitlist. Thank you!");
+          }
+          emailInput.value = "";
+          return;
+        }
+
+        const code = (data && (data.error || data.code)) || "";
+        if (code === "invalid_origin") {
+          alert("Blocked by security policy. Please refresh and try again.");
+        } else if (code === "rate_limited") {
+          alert("Too many requests. Please wait a minute and try again.");
+        } else if (code === "invalid_email") {
+          alert("Invalid email format.");
+        } else if (code === "empty_email") {
+          alert("Please enter your email address.");
+        } else {
+          alert("Signup failed. Please try again.");
+        }
+      } catch (e) {
+        alert("Network error. Please try again.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+  </script>
+
   <script>
     (function () {
-      const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const behavior = reduced ? "auto" : "smooth";
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const behavior = prefersReduced ? 'auto' : 'smooth';
 
       function scrollToHash(hash) {
-        if (!hash || hash.charAt(0) !== "#") return false;
+        if (!hash || hash.charAt(0) !== '#') return false;
         const el = document.querySelector(hash);
         if (!el) return false;
-        el.scrollIntoView({ behavior, block: "start" });
+        el.scrollIntoView({ behavior, block: 'start' });
         return true;
       }
 
-      document.addEventListener("click", function (e) {
-        const a = e.target && e.target.closest ? e.target.closest('a[data-anchor], a[href^="#"]') : null;
+      document.addEventListener('click', function (e) {
+        const a = e.target && e.target.closest ? e.target.closest('a') : null;
         if (!a) return;
 
-        const hash = (a.getAttribute("data-anchor") || a.getAttribute("href") || "").trim();
-        if (!hash || hash === "#" || hash.charAt(0) !== "#") return;
-        if (!document.querySelector(hash)) return;
+        const href = a.getAttribute('href') || '';
+        const dataAnchor = a.getAttribute('data-anchor') || '';
+        const targetHash = dataAnchor || href;
 
-        e.preventDefault();
-
-        if (history && history.pushState) history.pushState(null, "", hash);
-        else location.hash = hash;
-
-        scrollToHash(hash);
+        if (targetHash && targetHash.startsWith('#')) {
+          e.preventDefault();
+          if (history && history.pushState) {
+            history.pushState(null, '', targetHash);
+          } else {
+            location.hash = targetHash;
+          }
+          scrollToHash(targetHash);
+        }
       }, { passive: false });
 
-      window.addEventListener("load", function () {
+      window.addEventListener('load', function () {
         if (location.hash) scrollToHash(location.hash);
       });
     })();
