@@ -1,6 +1,7 @@
-/* SingKANA EN LP styles
-   - Restores centered layout (fixes "left aligned" look)
-   - Used by: `index_en_updated.html`, `index_en_final.html`
+/* SingKANA EN LP styles (Hardened /en/ edition)
+   - Centered layout guaranteed
+   - Prevents "left aligned" / "footer stuck" regressions
+   - Restores CTA quality (primary/ghost contrast)
 */
 
 :root{
@@ -22,10 +23,14 @@
   --accent1: rgba(139, 92, 246, 0.95);
   --accent2: rgba(236, 72, 153, 0.95);
   --accent3: rgba(56, 189, 248, 0.95);
+
+  --radius: 18px;
 }
 
 *{ box-sizing: border-box; }
-html, body{ height: 100%; }
+
+/* IMPORTANT: avoid height:100% traps; allow natural page growth */
+html, body{ min-height: 100%; }
 
 body{
   margin: 0;
@@ -37,22 +42,18 @@ body{
     radial-gradient(1000px 700px at 60% 95%, rgba(236, 72, 153, 0.12), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 a{ color: inherit; text-decoration: none; }
 a:hover{ color: rgba(203, 213, 225, 0.95); }
 
-/* ---------- Centered layout shell (the main fix) ---------- */
+/* ---------- Centered layout shell (never breaks) ---------- */
+/* One source of truth for centered width */
+.container,
 .nav,
 .hero-inner,
 .footer-inner{
-  width: min(var(--page-max), calc(100% - (var(--page-pad) * 2)));
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Shared centered container (use this for main content) */
-.container{
   width: min(var(--page-max), calc(100% - (var(--page-pad) * 2)));
   margin-left: auto;
   margin-right: auto;
@@ -115,11 +116,13 @@ a:hover{ color: rgba(203, 213, 225, 0.95); }
   font-size: 13px;
   color: rgba(226, 232, 240, 0.85);
 }
-.nav-links a{ transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease; }
+.nav-links a{
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+  border-radius: 999px;
+}
 .nav-links a:hover{ color: rgba(226,232,240,1); }
 .nav-links a.pill{
   padding: 8px 12px;
-  border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(2,6,23,0.35);
   color: rgba(226, 232, 240, 0.92);
@@ -127,6 +130,7 @@ a:hover{ color: rgba(203, 213, 225, 0.95); }
 .nav-links a.pill:hover{
   border-color: rgba(139,92,246,0.55);
   background: rgba(139,92,246,0.10);
+  transform: translateY(-1px);
 }
 
 /* ---------- Hero content ---------- */
@@ -167,6 +171,8 @@ h1{
   color: var(--muted);
   max-width: 58ch;
 }
+
+/* ---------- CTA (restore grade) ---------- */
 .cta{
   display: flex;
   align-items: center;
@@ -181,25 +187,36 @@ h1{
   gap: 10px;
   padding: 12px 16px;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 14px;
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(2,6,23,0.35);
-  transition: transform 0.12s ease, filter 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  transition: transform 0.12s ease, filter 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+  will-change: transform;
 }
+.btn:hover{ transform: translateY(-1px); }
+
 .btn.primary{
-  border-color: rgba(139,92,246,0.55);
+  border-color: rgba(139,92,246,0.65);
   background: linear-gradient(90deg, rgba(139,92,246,0.95), rgba(236,72,153,0.92));
-  box-shadow: 0 0 40px rgba(139,92,246,0.20);
-}
-.btn.ghost:hover,
-.btn:hover{
-  border-color: rgba(139,92,246,0.55);
-  background: rgba(139,92,246,0.10);
+  box-shadow: 0 0 45px rgba(139,92,246,0.26);
 }
 .btn.primary:hover{
-  filter: brightness(1.06);
+  filter: brightness(1.08);
+  box-shadow: 0 0 70px rgba(139,92,246,0.28);
 }
+
+/* Ghost should not look like "cheap default button" */
+.btn.ghost{
+  border-color: rgba(255,255,255,0.20);
+  background: rgba(2,6,23,0.22);
+}
+.btn.ghost:hover{
+  border-color: rgba(236,72,153,0.55);
+  background: rgba(236,72,153,0.10);
+  box-shadow: 0 0 40px rgba(236,72,153,0.12);
+}
+
 .micro{
   margin: 14px 0 0;
   font-size: 12px;
@@ -220,7 +237,7 @@ h1{
 
 /* ---------- Hero card ---------- */
 .hero-card{
-  border-radius: 18px;
+  border-radius: var(--radius);
   border: 1px solid var(--stroke);
   background: rgba(2,6,23,0.40);
   backdrop-filter: blur(12px);
@@ -245,12 +262,8 @@ h1{
   color: rgba(226,232,240,0.9);
   white-space: nowrap;
 }
-.chip.subtle{
-  opacity: 0.8;
-}
-.card-body{
-  padding: 16px;
-}
+.chip.subtle{ opacity: 0.8; }
+.card-body{ padding: 16px; }
 .card-title{
   margin: 0;
   font-weight: 800;
@@ -301,9 +314,8 @@ main{
   padding: 0 0 40px;
   width: 100%;
 }
-.section{
-  padding: 68px 0;
-}
+.section{ padding: 68px 0; }
+
 .section-head h2{
   margin: 0;
   font-size: 28px;
@@ -316,9 +328,7 @@ main{
   color: var(--muted);
   max-width: 70ch;
 }
-.section-head.center{
-  text-align: center;
-}
+.section-head.center{ text-align: center; }
 .section-head.center .lead{
   margin-left: auto;
   margin-right: auto;
@@ -378,9 +388,8 @@ main{
   border-bottom: 1px solid rgba(255,255,255,0.06);
   z-index: -1;
 }
-.panel.darkpanel{
-  background: rgba(2,6,23,0.45);
-}
+.panel.darkpanel{ background: rgba(2,6,23,0.45); }
+
 .emphasis{
   margin: 24px 0 0;
   font-size: 18px;
@@ -439,15 +448,21 @@ main{
 .waitlist-form button{
   padding: 12px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(139,92,246,0.55);
+  border: 1px solid rgba(139,92,246,0.65);
   background: linear-gradient(90deg, rgba(139,92,246,0.95), rgba(236,72,153,0.92));
   color: #fff;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
+  transition: filter 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+  box-shadow: 0 0 40px rgba(139,92,246,0.18);
 }
-.waitlist-form button:hover{ filter: brightness(1.06); }
+.waitlist-form button:hover{
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 0 65px rgba(139,92,246,0.22);
+}
 
-/* Footer */
+/* Footer (hard guarantee centered) */
 .footer{
   border-top: 1px solid rgba(255,255,255,0.08);
   background: rgba(2,6,23,0.35);
@@ -486,8 +501,10 @@ main{
     grid-template-columns: 1fr;
     gap: 18px;
     padding-top: 26px;
+    align-items: start;
   }
 }
+
 @media (max-width: 640px){
   :root{ --page-pad: 16px; }
   h1{ font-size: 36px; }
@@ -497,4 +514,3 @@ main{
   .section{ padding: 52px 0; }
   .nav{ padding: 14px 0; }
 }
-
