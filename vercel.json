@@ -2,10 +2,7 @@
   "rewrites": [
     { "source": "/api/romaji", "destination": "https://singkana.com/api/romaji" },
     { "source": "/api/waitlist", "destination": "https://singkana.com/api/waitlist" }
-  ]
-}
-
-{
+  ],
   "redirects": [
     { "source": "/romaji", "destination": "https://singkana.com/romaji/", "permanent": true },
     { "source": "/romaji/:path*", "destination": "https://singkana.com/romaji/", "permanent": true }
